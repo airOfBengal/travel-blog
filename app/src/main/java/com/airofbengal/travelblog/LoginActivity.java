@@ -3,7 +3,9 @@ package com.airofbengal.travelblog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -11,7 +13,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.android.material.textfield.TextInputLayout;
-
 
 public class LoginActivity extends AppCompatActivity {
     private TextInputLayout textUsernameLayout;
@@ -79,6 +80,17 @@ public class LoginActivity extends AppCompatActivity {
         textPasswordInput.setEnabled(false);
         loginButton.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            startMainActivity();
+            finish();
+        }, 2000);
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void showErrorDialog() {
