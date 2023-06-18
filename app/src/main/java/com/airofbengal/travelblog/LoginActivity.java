@@ -8,13 +8,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.material.textfield.TextInputLayout;
+
 
 public class LoginActivity extends AppCompatActivity {
     private TextInputLayout textUsernameLayout;
     private TextInputLayout textPasswordInput;
     private Button loginButton;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         textPasswordInput
                 .getEditText()
                 .addTextChangedListener(createTextWatcher(textPasswordInput));
+
+        progressBar = findViewById(R.id.loginProgressBar);
     }
 
     private TextWatcher createTextWatcher(TextInputLayout textInputLayout) {
@@ -64,7 +69,16 @@ public class LoginActivity extends AppCompatActivity {
             textPasswordInput.setError("Password must not be empty");
         }else if (!username.equals("admin") && !password.equals("admin")){
             showErrorDialog();
+        } else {
+            performLogin();
         }
+    }
+
+    private void performLogin() {
+        textUsernameLayout.setEnabled(false);
+        textPasswordInput.setEnabled(false);
+        loginButton.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void showErrorDialog() {
