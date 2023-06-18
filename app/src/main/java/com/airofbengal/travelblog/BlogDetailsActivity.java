@@ -3,7 +3,9 @@ package com.airofbengal.travelblog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ public class BlogDetailsActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private ImageView imageAvatar;
     private ImageView imageMain;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class BlogDetailsActivity extends AppCompatActivity {
         ImageView imageBack = findViewById(R.id.imageBack);
         imageBack.setOnClickListener(v -> finish());
 
+        progressBar = findViewById(R.id.dataLoadProgressBar);
+
         loadData();
     }
 
@@ -64,6 +69,7 @@ public class BlogDetailsActivity extends AppCompatActivity {
     }
 
     private void showData(Blog blog) {
+        progressBar.setVisibility(View.GONE);
         textTitle.setText(blog.getTitle());
         textDate.setText(blog.getDate());
         textAuthor.setText(blog.getAuthor().getName());
