@@ -12,6 +12,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textUserNameLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintBottom_toTopOf="@+id/textPasswordInput"
             app:layout_constraintVertical_chainStyle="packed"
             android:layout_width="match_parent"
@@ -31,6 +32,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textPasswordInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintBottom_toTopOf="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
