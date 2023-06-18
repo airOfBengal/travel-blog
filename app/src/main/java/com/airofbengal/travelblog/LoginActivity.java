@@ -20,9 +20,19 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private ProgressBar progressBar;
 
+    private BlogPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        preferences = new BlogPreferences(this);
+        if (preferences.isLoggedIn()){
+            startMainActivity();
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         textUsernameLayout = findViewById(R.id.textUserNameLayout);
@@ -76,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
+        preferences.setLoggedIn(true);
+
         textUsernameLayout.setEnabled(false);
         textPasswordInput.setEnabled(false);
         loginButton.setVisibility(View.INVISIBLE);
