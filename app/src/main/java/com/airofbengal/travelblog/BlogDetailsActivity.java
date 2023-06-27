@@ -2,6 +2,8 @@ package com.airofbengal.travelblog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -21,6 +23,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 public class BlogDetailsActivity extends AppCompatActivity {
+    private static final String EXTRAS_BLOG = "EXTRAS_BLOG";
+
     private TextView textTitle;
     private TextView textDate;
     private TextView textAuthor;
@@ -31,6 +35,12 @@ public class BlogDetailsActivity extends AppCompatActivity {
     private ImageView imageAvatar;
     private ImageView imageMain;
     private ProgressBar progressBar;
+
+    public static void startBlogDetailsActivity(Activity activity, Blog blog){
+        Intent intent = new Intent(activity, BlogDetailsActivity.class);
+        intent.putExtra(EXTRAS_BLOG, blog);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +63,9 @@ public class BlogDetailsActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.dataLoadProgressBar);
 
-        loadData();
+        showData(getIntent()
+                .getExtras()
+                .getParcelable(EXTRAS_BLOG));
     }
 
     private void loadData() {
@@ -93,12 +105,12 @@ public class BlogDetailsActivity extends AppCompatActivity {
         ratingBar.setRating(blog.getRating());
 
         Glide.with(this)
-                .load(blog.getImage())
+                .load(blog.getImageURL())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageMain);
 
         Glide.with(this)
-                .load(blog.getAuthor().getAvatar())
+                .load(blog.getAuthor().getAvatarURL())
                 .transform(new CircleCrop())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageAvatar);
