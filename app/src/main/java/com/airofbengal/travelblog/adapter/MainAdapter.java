@@ -12,12 +12,28 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainAdapter extends ListAdapter<Blog, MainAdapter.MainViewHolder> {
+    public void sortByTitle() {
+        List<Blog> currentList = new ArrayList<>(getCurrentList());
+        Collections.sort(currentList, (o1, o2) -> o1.getTitle().compareTo(o2.getTitle()));
+        submitList(currentList);
+    }
+
+    public void sortByDate() {
+        List<Blog> currentList = new ArrayList<>(getCurrentList());
+        Collections.sort(currentList, (o1, o2) -> o2.getDateMillis().compareTo(o1.getDateMillis()));
+        submitList(currentList);
+    }
+
     public interface OnItemClickListener {
         void onItemClicked(Blog blog);
     }

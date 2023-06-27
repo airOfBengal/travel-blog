@@ -3,9 +3,13 @@ package com.airofbengal.travelblog.http;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class Blog implements Parcelable {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
     private String id;
     private Author author;
     private String title;
@@ -134,5 +138,15 @@ public class Blog implements Parcelable {
         parcel.writeString(description);
         parcel.writeInt(views);
         parcel.writeFloat(rating);
+    }
+
+    public Long getDateMillis() {
+        try {
+            Date date = dateFormat.parse(getDate());
+            return date != null ? date.getTime() : null;
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
