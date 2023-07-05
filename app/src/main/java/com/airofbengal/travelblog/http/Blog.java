@@ -8,9 +8,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Blog implements Parcelable {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
+    @PrimaryKey
+    @NonNull
     private String id;
+    @Embedded
     private Author author;
     private String title;
     private String date;
@@ -18,6 +27,17 @@ public class Blog implements Parcelable {
     private String description;
     private int views;
     private float rating;
+
+    public Blog(String id, Author author, String title, String date, String image, String description, int views, float rating) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.date = date;
+        this.image = image;
+        this.description = description;
+        this.views = views;
+        this.rating = rating;
+    }
 
     protected Blog(Parcel in) {
         id = in.readString();

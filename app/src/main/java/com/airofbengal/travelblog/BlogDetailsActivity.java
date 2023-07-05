@@ -69,17 +69,7 @@ public class BlogDetailsActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        BlogHttpClient.INSTANCE.loadBlogArticles(new BlogArticlesCallback() {
-            @Override
-            public void onSuccess(List<Blog> blogList) {
-                runOnUiThread(()-> showData(blogList.get(0)));
-            }
-
-            @Override
-            public void onError() {
-                runOnUiThread(() -> showErrorSnackbar());
-            }
-        });
+        BlogHttpClient.INSTANCE.loadBlogArticles();
     }
 
     private void showErrorSnackbar() {

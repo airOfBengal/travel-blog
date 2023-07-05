@@ -14,6 +14,12 @@ public class Author implements Parcelable {
         avatar = in.readString();
     }
 
+
+    public Author(String name, String avatar) {
+        this.name = name;
+        this.avatar = avatar;
+    }
+
     public static final Creator<Author> CREATOR = new Creator<Author>() {
         @Override
         public Author createFromParcel(Parcel in) {

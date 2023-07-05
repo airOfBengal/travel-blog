@@ -15,6 +15,8 @@ import com.airofbengal.travelblog.adapter.MainAdapter;
 import com.airofbengal.travelblog.http.Blog;
 import com.airofbengal.travelblog.http.BlogArticlesCallback;
 import com.airofbengal.travelblog.http.BlogHttpClient;
+import com.airofbengal.travelblog.repository.BlogRepository;
+import com.airofbengal.travelblog.repository.DataFromNetworkCallback;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,11 +31,14 @@ public class MainActivity extends AppCompatActivity {
 
     private MainAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
+    private BlogRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        repository = new BlogRepository(getApplicationContext());
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
@@ -65,9 +70,40 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         refreshLayout = findViewById(R.id.refresh);
-        refreshLayout.setOnRefreshListener(this::loadData);
+        refreshLayout.setOnRefreshListener(this::loadDataFromNetwork);
 
-        loadData();
+        loadDataFromDatabase();
+        loadDataFromNetwork();
+    }
+
+    private void loadDataFromNetwork() {
+        refreshLayout.setRefreshing(true);
+
+        repository.loadDataFromNetwork(new DataFromNetworkCallback() {
+            @Override
+            public void onSuccess(List<Blog> blogList) {
+                runOnUiThread(() -> {
+                    adapter.setData(blogList);
+                    sortData();
+                    refreshLayout.setRefreshing(false);
+                });
+            }
+
+            @Override
+            public void onError() {
+                runOnUiThread(()->{
+                    refreshLayout.setRefreshing(false);
+                    showErrorSnackbar();
+                });
+            }
+        });
+    }
+
+    private void loadDataFromDatabase() {
+        repository.loadDataFromDatabase(blogList -> runOnUiThread(()->{
+            adapter.setData(blogList);
+            sortData();
+        }));
     }
 
     private void onSortClicked() {
@@ -89,27 +125,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadData() {
-        refreshLayout.setRefreshing(true);
-        BlogHttpClient.INSTANCE.loadBlogArticles(new BlogArticlesCallback() {
-            @Override
-            public void onSuccess(List<Blog> blogList) {
-                runOnUiThread(() -> {
-                    refreshLayout.setRefreshing(false);
-                    adapter.setData(blogList);
-                    sortData();
-                });
-            }
-
-            @Override
-            public void onError() {
-                runOnUiThread(()-> {
-                    refreshLayout.setRefreshing(false);
-                    showErrorSnackbar();
-                });
-            }
-        });
-    }
+//    private void loadData() {
+//        refreshLayout.setRefreshing(true);
+//        BlogHttpClient.INSTANCE.loadBlogArticles(new BlogArticlesCallback() {
+//            @Override
+//            public void onSuccess(List<Blog> blogList) {
+//                runOnUiThread(() -> {
+//                    refreshLayout.setRefreshing(false);
+//                    adapter.setData(blogList);
+//                    sortData();
+//                });
+//            }
+//
+//            @Override
+//            public void onError() {
+//                runOnUiThread(()-> {
+//                    refreshLayout.setRefreshing(false);
+//                    showErrorSnackbar();
+//                });
+//            }
+//        });
+//    }
 
     private void showErrorSnackbar() {
         View rootView = findViewById(android.R.id.content);
@@ -117,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setActionTextColor(getResources().getColor(R.color.orange500));
         snackbar.setAction("Retry", v -> {
-            loadData();
+            loadDataFromNetwork();
             snackbar.dismiss();
         });
         snackbar.show();
